@@ -1,5 +1,5 @@
 // Variables
-const apiUrl = 'http://localhost:5678/api/'   //Stockage de l'adresse de l'API
+const apiUrl = 'http://localhost:5678/api/'                                  //Stockage de l'adresse de l'API
 
 // Récupération des Projets de l'API
 async function getWorks() {
@@ -14,7 +14,7 @@ async function getWorks() {
     return data;
   } catch (error) {
     console.error('Erreur lors de la récupération des Projets :', error);
-    return []; // Exemple : Retourner un tableau vide en cas d'erreur
+    return [];
   }
 }
 
@@ -25,14 +25,13 @@ getWorks()
   })
   .catch(error => {
     console.error('Erreur lors de la récupération des Projets :', error);
-    // Gérer l'erreur dans l'interface utilisateur ou fournir un mécanisme de secours
   });
 
 
 // Récupération des Catégories de l'API 
-async function getCategories() {                                     // Fonction unique pour les deux requêtes
+async function getCategories() {                                             // Fonction unique pour les deux requêtes
   try {                                                                      // Vérification des erreurs potentielles dans le bloc async
-    const response = await fetch(`${apiUrl}categories`);           // Requête dans l'API
+    const response = await fetch(`${apiUrl}categories`);                     // Requête dans l'API
 
     if (!response.ok) {
       throw new Error('Erreur lors de la récupération des catégories');
@@ -41,8 +40,8 @@ async function getCategories() {                                     // Fonction
     const data = await response.json();                                      // Conversion des données au format json
     return data;
   } catch (error) {                                                          // Réception des erreurs potentielles du bloc async
-    console.log('Erreur lors de la récupération des catégories :', error);  // Visualisation des erreurs
-    return [];                                    // Retourne des objets vides en cas d'erreur
+    console.log('Erreur lors de la récupération des catégories :', error);   // Visualisation des erreurs
+    return [];                                                               // Retourne des objets vides en cas d'erreur
   }
 }
 
@@ -54,4 +53,31 @@ getCategories()
     console.log('Erreur lors de la récupération des Catégories :', error);
   });
 
-// Affichage dynamique de la gallerie
+// Affichage dynamique de la galerie
+async function displayWorks(){
+    const gallery = document.querySelector('.gallery')                       // Récupération de l'élément HTML avec la classe .gallery du DOM et le stockage dans la constante gallery
+    gallery.innerHTML = "";                                                  // Efface le contenu existant dans l'élément avec la classe .gallery
+//    console.log(gallery)
+      
+  const works = await getWorks();                                            // Récupération des données des Projets
+//  console.log(getWorks);
+
+  works.forEach(work => {                                                    // Boucle pour chaque Projet (forEach)
+    const figure = document.createElement('figure');                         // Création des éléments HTML pour chaque Projet
+    const img = document.createElement('img');
+    const figcaption = document.createElement('figcaption');
+
+    img.src = work.imageUrl;
+    img.alt = work.title;
+    figcaption.textContent = work.title;
+//    console.log('Affichage des Projets :', work.title);
+
+    figure.appendChild(img);                                                 // Construction de la structure HTML
+    figure.appendChild(figcaption);
+    gallery.appendChild(figure);
+  }); 
+}
+
+displayWorks()
+
+// Filtres
