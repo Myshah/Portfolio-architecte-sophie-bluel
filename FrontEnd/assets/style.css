@@ -131,6 +131,36 @@ li:hover {
 }
 
 
+.filter {
+	display: flex;
+	width: 100%;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 20px;	
+}
+
+.filter button {
+	background-color: #ffffff;
+	border: 1px solid #1D6154;
+	color:#1D6154;
+	border-radius: 25px;
+	padding: 10px 20px;
+	cursor: pointer;
+	font-family: 'Work Sans', sans-serif;
+	font-size: 16px;
+	transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .filter button:hover {
+	background-color: #1D6154;
+	color: #ffffff;
+  }
+  
+  .filter button.active {
+	background-color: #1D6154;
+	color: #ffffff;
+  }
+
 
 /* Portfolio - Galleries */
 

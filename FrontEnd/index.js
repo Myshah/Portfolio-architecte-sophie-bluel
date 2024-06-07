@@ -130,6 +130,7 @@ gallery.innerHTML = "";
 const works = await getWorks();
 const filteredWorks = categoryName ? works.filter(work => work.category && work.category.name === categoryName) : works;
 
+//retravailler cette partie pour la condenser car doublons
 filteredWorks.forEach(work => {
   const figure = document.createElement('figure');
   const img = document.createElement('img');
