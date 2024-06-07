@@ -1,7 +1,7 @@
-// Variables
+/* Variables*/
 const apiUrl = 'http://localhost:5678/api/'                                  //Stockage de l'adresse de l'API
 
-// Récupération des Projets de l'API
+//*** Récupération des Projets de l'API ***//
 async function getWorks() {
   try {
     const response = await fetch(`${apiUrl}works`);
@@ -28,7 +28,7 @@ getWorks()
   });
 
 
-// Récupération des Catégories de l'API 
+//*** Récupération des Catégories de l'API ***// 
 async function getCategories() {                                             // Fonction unique pour les deux requêtes
   try {                                                                      // Vérification des erreurs potentielles dans le bloc async
     const response = await fetch(`${apiUrl}categories`);                     // Requête dans l'API
@@ -53,7 +53,7 @@ getCategories()
     console.log('Erreur lors de la récupération des Catégories :', error);
   });
 
-// Affichage dynamique de la galerie
+//*** Affichage dynamique de la galerie ***//
 async function displayWorks(){
     const gallery = document.querySelector('.gallery')                       // Récupération de l'élément HTML avec la classe .gallery du DOM et le stockage dans la constante gallery
     gallery.innerHTML = "";                                                  // Efface le contenu existant dans l'élément avec la classe .gallery
@@ -80,4 +80,56 @@ async function displayWorks(){
 
 displayWorks()
 
-// Filtres
+//*** Filtres ***//
+async function createFilterButtons() {
+  const works = await getWorks();
+  const categorySet = new Set();
+
+  // Extraire les catégories uniques des projets
+  works.forEach(work => {
+    if (work.category && work.category.name) {
+      categorySet.add(work.category.name);
+    }
+  });
+
+  const filterContainer = document.querySelector('.filter');
+
+  categorySet.forEach(category => {
+    const button = document.createElement('button');
+    button.textContent = category;
+    button.addEventListener('click', () => displayFilteredWorks(category));
+    filterContainer.appendChild(button);
+  });
+
+  // Ajout d'un bouton pour afficher tous les projets
+  const allButton = document.createElement('button');
+  allButton.textContent = 'Tous';
+  allButton.addEventListener('click', () => displayFilteredWorks());
+  filterContainer.appendChild(allButton);
+}
+
+createFilterButtons();
+
+async function displayFilteredWorks(categoryName = null) {
+  const gallery = document.querySelector('.gallery');
+  gallery.innerHTML = "";
+
+  const works = await getWorks();
+  const filteredWorks = categoryName ? works.filter(work => work.category && work.category.name === categoryName) : works;
+
+  filteredWorks.forEach(work => {
+    const figure = document.createElement('figure');
+    const img = document.createElement('img');
+    const figcaption = document.createElement('figcaption');
+
+    img.src = work.imageUrl;
+    img.alt = work.title;
+    figcaption.textContent = work.title;
+
+    figure.appendChild(img);
+    figure.appendChild(figcaption);
+    gallery.appendChild(figure);
+  });
+}
+
+displayFilteredWorks();

@@ -121,10 +121,19 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
+
+/*** PORTFOLIO ***/
+/* Portfolio - Filtres */
+
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
 }
+
+
+
+/* Portfolio - Galleries */
+
 .gallery {
 	width: 100%;
 	display: grid;
@@ -137,6 +146,9 @@ li:hover {
 	width: 100%;
 
 }
+
+/*** CONTACT ***/
+
 #contact {
 	width: 50%;
 margin: auto;
@@ -179,6 +191,8 @@ input[type="submit"]{
 	text-align: center;
 	border-radius: 60px ;
 }
+
+/*** FOOTER ***/
 
 footer nav ul {
 	display: flex;
