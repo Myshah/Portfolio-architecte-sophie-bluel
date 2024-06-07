@@ -94,42 +94,55 @@ async function createFilterButtons() {
 
   const filterContainer = document.querySelector('.filter');
 
-  categorySet.forEach(category => {
-    const button = document.createElement('button');
-    button.textContent = category;
-    button.addEventListener('click', () => displayFilteredWorks(category));
-    filterContainer.appendChild(button);
-  });
+// Ajout d'un bouton pour afficher tous les projets en premier
+const allButton = document.createElement('button');
+allButton.textContent = 'Tous';
+allButton.classList.add('all');
+allButton.addEventListener('click', () => {
+  displayFilteredWorks();
+  setActiveButton(allButton);
+});
+filterContainer.appendChild(allButton);
 
-  // Ajout d'un bouton pour afficher tous les projets
-  const allButton = document.createElement('button');
-  allButton.textContent = 'Tous';
-  allButton.addEventListener('click', () => displayFilteredWorks());
-  filterContainer.appendChild(allButton);
+categorySet.forEach(category => {
+  const button = document.createElement('button');
+  button.textContent = category;
+  button.addEventListener('click', () => {
+    displayFilteredWorks(category);
+    setActiveButton(button);
+  });
+  filterContainer.appendChild(button);
+});
+}
+
+function setActiveButton(activeButton) {
+const buttons = document.querySelectorAll('.filter button');
+buttons.forEach(button => button.classList.remove('active'));
+activeButton.classList.add('active');
 }
 
 createFilterButtons();
 
 async function displayFilteredWorks(categoryName = null) {
-  const gallery = document.querySelector('.gallery');
-  gallery.innerHTML = "";
+const gallery = document.querySelector('.gallery');
+gallery.innerHTML = "";
 
-  const works = await getWorks();
-  const filteredWorks = categoryName ? works.filter(work => work.category && work.category.name === categoryName) : works;
+const works = await getWorks();
+const filteredWorks = categoryName ? works.filter(work => work.category && work.category.name === categoryName) : works;
 
-  filteredWorks.forEach(work => {
-    const figure = document.createElement('figure');
-    const img = document.createElement('img');
-    const figcaption = document.createElement('figcaption');
+filteredWorks.forEach(work => {
+  const figure = document.createElement('figure');
+  const img = document.createElement('img');
+  const figcaption = document.createElement('figcaption');
 
-    img.src = work.imageUrl;
-    img.alt = work.title;
-    figcaption.textContent = work.title;
+  img.src = work.imageUrl;
+  img.alt = work.title;
+  figcaption.textContent = work.title;
 
-    figure.appendChild(img);
-    figure.appendChild(figcaption);
-    gallery.appendChild(figure);
-  });
+  figure.appendChild(img);
+  figure.appendChild(figcaption);
+  gallery.appendChild(figure);
+});
 }
 
 displayFilteredWorks();
