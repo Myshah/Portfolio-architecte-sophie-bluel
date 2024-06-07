@@ -54,15 +54,22 @@ getCategories()
   });
 
 //*** Affichage dynamique de la galerie ***//
-async function displayWorks(){
+async function displayWorks(id){
     const gallery = document.querySelector('.gallery')                       // Récupération de l'élément HTML avec la classe .gallery du DOM et le stockage dans la constante gallery
     gallery.innerHTML = "";                                                  // Efface le contenu existant dans l'élément avec la classe .gallery
-//    console.log(gallery)
+//    console.log(id)
       
   const works = await getWorks();                                            // Récupération des données des Projets
 //  console.log(getWorks);
+  if (id == 0){
+    filteredWorks = works.filter((work) => work.categoryId != id);
+  } else {
+    filteredWorks = works.filter((work) => work.categoryId === id);  // Filtre les projets en fonction de la catégorie sélectionnée
+  }
+  
 
-  works.forEach(work => {                                                    // Boucle pour chaque Projet (forEach)
+  filteredWorks.forEach(work => {                                                    // Boucle pour chaque Projet (forEach)
+
     const figure = document.createElement('figure');                         // Création des éléments HTML pour chaque Projet
     const img = document.createElement('img');
     const figcaption = document.createElement('figcaption');
@@ -78,72 +85,55 @@ async function displayWorks(){
   }); 
 }
 
-displayWorks()
+displayWorks(0)
 
 //*** Filtres ***//
 async function createFilterButtons() {
-  const works = await getWorks();
-  const categorySet = new Set();
+ // const works = await getWorks();                                            // Récupération des projets
+ const cats = await getCategories()
+ const categorySet = new Set();                                             // "Set" pour stocker les catégories uniques
 
-  // Extraire les catégories uniques des projets
-  works.forEach(work => {
-    if (work.category && work.category.name) {
-      categorySet.add(work.category.name);
-    }
+    cats.forEach(cat => {                                                  // Extraire les catégories uniques des projets
+      categorySet.add(cat);                                   // Ajoute la catégorie au Set
   });
+//console.log(categorySet)
+  const filterContainer = document.querySelector('.filter');                 // Sélectionne l'élément conteneur pour les filtres
 
-  const filterContainer = document.querySelector('.filter');
-
-// Ajout d'un bouton pour afficher tous les projets en premier
-const allButton = document.createElement('button');
-allButton.textContent = 'Tous';
-allButton.classList.add('all');
-allButton.addEventListener('click', () => {
-  displayFilteredWorks();
-  setActiveButton(allButton);
+/* Création des boutons de filtre */
+// Ajout d'un bouton pour afficher tous les projets
+  const allButton = document.createElement('button');
+  allButton.textContent = 'Tous';
+  allButton.classList.add('all');
+  allButton.addEventListener('click', () => {
+  displayFilteredWorks(0);                                                    // Affiche tous les projets quand on appuie sur "Tous"
+  setActiveButton(allButton);                                                // Active le bouton "Tous"
 });
-filterContainer.appendChild(allButton);
+filterContainer.appendChild(allButton);                                      // Ajoute le bouton "Tous"
 
+// Création des boutons pour chaque catégorie
 categorySet.forEach(category => {
+//  console.log(category)
+//  console.log(category.key)
   const button = document.createElement('button');
-  button.textContent = category;
-  button.addEventListener('click', () => {
-    displayFilteredWorks(category);
-    setActiveButton(button);
+  button.textContent = category.name;
+  button.id = category.id
+   button.addEventListener('click', () => {
+    displayFilteredWorks(category.id);                                          // Affiche les projets filtrés par catégorie
+    setActiveButton(button);                                                 // Active le bouton de la catégorie
   });
-  filterContainer.appendChild(button);
+    filterContainer.appendChild(button);
 });
 }
 
 function setActiveButton(activeButton) {
-const buttons = document.querySelectorAll('.filter button');
-buttons.forEach(button => button.classList.remove('active'));
-activeButton.classList.add('active');
+const buttons = document.querySelectorAll('.filter button');                 // Sélectionne tous les boutons de filtre
+buttons.forEach(button => button.classList.remove('active'));                // Retire la classe 'active' de tous les boutons
+activeButton.classList.add('active');                                        // Ajoute la classe 'active' au bouton cliqué
 }
 
 createFilterButtons();
 
-async function displayFilteredWorks(categoryName = null) {
-const gallery = document.querySelector('.gallery');
-gallery.innerHTML = "";
+function displayFilteredWorks(idCat) {
 
-const works = await getWorks();
-const filteredWorks = categoryName ? works.filter(work => work.category && work.category.name === categoryName) : works;
-
-//retravailler cette partie pour la condenser car doublons
-filteredWorks.forEach(work => {
-  const figure = document.createElement('figure');
-  const img = document.createElement('img');
-  const figcaption = document.createElement('figcaption');
-
-  img.src = work.imageUrl;
-  img.alt = work.title;
-  figcaption.textContent = work.title;
-
-  figure.appendChild(img);
-  figure.appendChild(figcaption);
-  gallery.appendChild(figure);
-});
+displayWorks(idCat)
 }
-
-displayFilteredWorks();
