@@ -16,10 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.token) {
                 alert("Connexion réussie !");
+                localStorage.setItem("token", data.token);
+                localStorage.setItem('userId', data.userId)
+                window.location.href = "index.html";
 
             } else {
+               // console.log(data)
                 alert("Email ou mot de passe incorrect");
             }
         })

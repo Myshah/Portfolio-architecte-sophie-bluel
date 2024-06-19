@@ -133,3 +133,5 @@ createFilterButtons();
 function displayFilteredWorks(idCat) {
   displayWorks(idCat)
 }
+
+/* Modale */
