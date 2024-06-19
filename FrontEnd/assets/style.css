@@ -52,7 +52,9 @@ body {
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color: rgb(246, 246, 235);
 }
+
 header {
 	display: flex;
 	justify-content: space-between;
@@ -76,14 +78,13 @@ h1 > span {
 	font-family: 'Work Sans';
 	font-size:10px;
 	letter-spacing: 0.1em;
-;
 }
 
 h2{
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
-	color: #1D6154
+	color: #1D6154;
 }
 nav ul {
 	display: flex;
@@ -216,6 +217,11 @@ li a:hover {
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
+.form_spacing {
+	padding-bottom: 5px;
+	padding-top: 30px;
+}
+
 .login input[type="submit"] {
 
 }
@@ -229,7 +235,7 @@ li a:hover {
 
 #contact {
 	width: 50%;
-margin: auto;
+    margin: auto;
 }
 #contact > * {
 	text-align: center;
