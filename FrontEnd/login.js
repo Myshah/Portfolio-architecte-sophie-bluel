@@ -18,8 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             if (data.token) {
                 alert("Connexion réussie !");
+                // stocker les infos d'authentification
                 localStorage.setItem("token", data.token);
                 localStorage.setItem('userId', data.userId)
+                // rediriger vers la page d’accueil 
                 window.location.href = "index.html";
 
             } else {

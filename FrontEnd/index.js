@@ -134,4 +134,44 @@ function displayFilteredWorks(idCat) {
   displayWorks(idCat)
 }
 
+/* ADMIN */
+// *** Gestion de la connexion/déconnexion *** //
+document.addEventListener('DOMContentLoaded', () => {
+  const logLink = document.getElementById('logLink'); // Lien login/logout
+
+  // Vérifie et met à jour l'état de connexion au chargement et après chaque action
+  updateLoginStatus();
+
+  // Gestion du clic sur le lien login/logout
+  logLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (localStorage.getItem('token') && localStorage.getItem('userId')) {
+          logout(); // Déconnexion si déjà connecté
+      } else {
+          window.location.href = "login.html"; // Redirection vers la page de connexion si non connecté
+      }
+  });
+});
+
+// Fonction pour mettre à jour l'affichage en fonction de l'état de connexion
+function updateLoginStatus() {
+  const logLink = document.getElementById('logLink');
+  const isLoggedIn = localStorage.getItem('token') && localStorage.getItem('userId'); // Vérifie l'état à chaque appel
+
+  if (isLoggedIn) {
+      logLink.textContent = 'Logout'; // Changer le texte du lien en "Logout"
+  } else {
+      logLink.textContent = 'Login';
+  }
+}
+
+// Fonction de déconnexion
+function logout() {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('token');
+  updateLoginStatus(); // Mettre à jour l'état de connexion après déconnexion
+  alert('Vous avez été déconnecté.');
+  window.location.href = "index.html"; // Redirection vers la page d'accueil après la déconnexion
+}
+
 /* Modale */
