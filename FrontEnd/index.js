@@ -175,30 +175,49 @@ function logout() {
 }
 
 /* Modale */
-let modal = null
+let modal = null;
 
-const openModal = function (e) {
-  e.preventDefault()
-  const target = document.querySelector(e.target.getAttribute('href'))
-  target.style.display = null
-  target.removeAttribute('aria-hidden')
-  target.setAttribute('aria-modal', 'true')
-  modal = target
-  modal.addEventListener('click', closeModal)
-  modal.querySelector('.js-modal-close').addEventListener('click', closeModal)
+// Ouvrir la modale
+async function openModal(event) {
+  event.preventDefault();
+
+  /// Vérification de la connexion
+  const isLoggedIn = localStorage.getItem('token') !== null;
+  if (!isLoggedIn) {
+    return; // Empêche l'ouverture si non connecté
+  }
+
+  const target = document.querySelector(event.target.getAttribute('href'));
+  modal = target;
+  target.style.display = null;
+  target.classList.remove('aria-hidden');
+  target.setAttribute('aria-modal', 'true');
 }
 
-const closeModal = function (e) {
-  if (modal === null) return
-  e.preventDefault()
-  modal.style.display = "none"
-  modal.setAttribute('aria-hidden', 'true')
-  modal.removeAttribute('aria-modal')
-  modal.removeEventListener('click', closeModal)
-  modal.querySelector('.js-modal-close').removeEventListener('click', closeModal)
-  modal = null
+// Fermer la modale
+function closeModal(event) {
+  if (modal === null) return;
+  event.preventDefault();
+  modal.style.display = "none";
+  modal.classList.add('aria-hidden');
+  modal.removeAttribute('aria-modal');
+  modal = null;
 }
 
-document.querySelectorAll('.js-modal').forEach(a => {
-  a.addEventListener('click', openModal)
-})
+// Gestionnaire d'événements pour les clics
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('js-modal')) {
+    openModal(e);
+  } else if (e.target.classList.contains('js-modal-close') || modal && e.target === modal) {
+    closeModal(e);
+  }
+});
+
+function updateModalLinks() {
+  const modalLinks = document.querySelectorAll('.js-modal');
+  modalLinks.forEach(link => {
+    link.style.display = localStorage.getItem('token') !== null ? 'block' : 'none';
+  });
+}
+
+updateModalLinks();
