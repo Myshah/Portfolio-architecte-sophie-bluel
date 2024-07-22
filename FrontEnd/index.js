@@ -1,5 +1,6 @@
 /* Variables*/
 const apiUrl = 'http://localhost:5678/api/'                                  //Stockage de l'adresse de l'API
+let works = [];
 
 //*** Récupération des Projets de l'API ***//
 async function getWorks() {
@@ -177,14 +178,24 @@ function logout() {
 /* Modale */
 let modal = null;
 
-// Ouvrir la modale
+async function createWorkElements() {
+  const works = await getWorks();
+  const elements = [];
+
+  works.forEach(work => {
+      // ... (code pour créer les éléments figure, img et figcaption)
+  });
+
+  return elements;
+}
+
+// Ouvrir la modale avec les Works
 async function openModal(event) {
   event.preventDefault();
 
-  /// Vérification de la connexion
   const isLoggedIn = localStorage.getItem('token') !== null;
   if (!isLoggedIn) {
-    return; // Empêche l'ouverture si non connecté
+      return; 
   }
 
   const target = document.querySelector(event.target.getAttribute('href'));
@@ -192,6 +203,33 @@ async function openModal(event) {
   target.style.display = null;
   target.classList.remove('aria-hidden');
   target.setAttribute('aria-modal', 'true');
+
+  const modalGallery = document.querySelector('.modal .modalGallery');
+  modalGallery.innerHTML = ""; 
+
+  try {
+      const response = await fetch(`${apiUrl}works`); // Appel à l'API dans la modale
+      if (!response.ok) {
+          throw new Error(`La requête API a échoué avec le statut : ${response.status}`);
+      }
+      const works = await response.json();
+
+      works.forEach(work => {
+          const figure = document.createElement('figure');
+          const img = document.createElement('img');
+          const figcaption = document.createElement('figcaption');
+
+          img.src = work.imageUrl;
+          img.alt = work.title;
+          figcaption.textContent = work.title;
+
+          figure.appendChild(img);
+          figure.appendChild(figcaption);
+          modalGallery.appendChild(figure);
+      });
+  } catch (error) {
+      console.error('Erreur lors de la récupération des projets dans la modale :', error);
+  }
 }
 
 // Fermer la modale
@@ -208,7 +246,7 @@ function closeModal(event) {
 document.addEventListener('click', function(e) {
   if (e.target.classList.contains('js-modal')) {
     openModal(e);
-  } else if (e.target.classList.contains('js-modal-close') || modal && e.target === modal) {
+  } else if (e.target.classList.contains('js-modal-close') || e.target.closest('.modal') === modal) {
     closeModal(e);
   }
 });

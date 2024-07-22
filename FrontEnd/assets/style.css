@@ -284,6 +284,20 @@ footer nav ul {
 	margin: 2em
 }
 
+
+/*** ADMIN ***/
+
+#portfolio-modify{
+	display: flex;
+	justify-content: center;
+	align-items: baseline;
+}
+
+#portfolio-modify i{
+	margin-left: 30px;
+	font-size: 1.2em;
+}
+
 /*** MODALE ***/
 
 .modal {
@@ -312,3 +326,35 @@ footer nav ul {
 	margin: auto;
 }
 
+#close-button {
+    position: relative;
+    top: 1px;
+    left: 310px;
+    font-size: 1.5rem;
+    color: #000000;
+    cursor: pointer;
+}
+
+.modalTitle {
+	font-size: 1.860em;
+	line-height: 30px;
+	text-align: center;
+	padding-top: 15px;
+}
+
+.modalGallery {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding: 45px 90px 45px 100px;
+	gap: 10px;
+}
+
+.modalGallery figure {
+	display: flex;
+	flex-direction: column;
+}
+
+.modalGallery img {
+	width: 80px;
+}
