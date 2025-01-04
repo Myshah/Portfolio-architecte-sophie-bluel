@@ -98,7 +98,7 @@ async function createFilterButtons() {
   // Ajout d'un bouton pour afficher tous les projets
   const allButton = document.createElement('button');
   allButton.textContent = 'Tous';
-  allButton.classList.add('all');
+  allButton.classList.add('all', "active");
   allButton.addEventListener('click', () => {
     displayFilteredWorks(0);                                                    // Affiche tous les projets quand on appuie sur "Tous"
     setActiveButton(allButton);                                                // Active le bouton "Tous"

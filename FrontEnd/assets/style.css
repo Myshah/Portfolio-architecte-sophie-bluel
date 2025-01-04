@@ -545,11 +545,12 @@ footer nav ul {
 
 .upload-photo-section {
 	text-align: center;
-	background-color: #e0f7fa;
+	background-color: #E8F1F6;
 	border-radius: 10px;
 	margin-bottom: 20px;
 	position: relative;
 	box-sizing: border-box;
+	padding: 20px 0;
 }
 
 .upload-photo-section i {
