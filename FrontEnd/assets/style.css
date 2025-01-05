@@ -160,7 +160,6 @@ li a:hover {
 
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
 }
 
 
@@ -170,6 +169,7 @@ li a:hover {
 	justify-content: center;
 	gap: 10px;
 	margin-bottom: 40px;
+	margin-top : 30px;
 }
 
 .filter button {
@@ -314,11 +314,20 @@ footer nav ul {
 
 #portfolio-modify {
 	display: flex;
-	justify-content: center;
-	align-items: baseline;
+	flex-direction: column;
+	align-items: center;
 
 }
 
+.title-and-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-and-button h2 {
+    margin-right: 10px; /* Espace entre le titre et le bouton */
+}
 
 .btn-modif {
 	display: flex;
@@ -329,6 +338,15 @@ footer nav ul {
 	border: none;
 	cursor: pointer;
 }
+
+#error-message {
+	color: red;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 30px;
+	text-align: center;
+	width: 100%;
+  }
 
 #portfolio-modify i {
 	margin-left: 20px;

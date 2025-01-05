@@ -1,8 +1,12 @@
 /* Variables*/
-const apiUrl = 'http://localhost:5678/api/'                                  //Stockage de l'adresse de l'API
+const apiUrl = 'http://localhost:5678/api/' //Stockage de l'adresse de l'API
 let works = [];
 
 //*** Récupération des Projets de l'API ***//
+
+// Sélection du conteneur pour le message d'erreur
+const errorMessageElement = document.getElementById('error-message');
+
 async function getWorks() {
   try {
     const response = await fetch(`${apiUrl}works`);
@@ -15,6 +19,8 @@ async function getWorks() {
     return data;
   } catch (error) {
     console.error('Erreur lors de la récupération des Projets :', error);
+    // Afficher le message d'erreur sur la page
+    errorMessageElement.style.display = 'block';
     return [];
   }
 }
@@ -22,6 +28,10 @@ async function getWorks() {
 getWorks()
   .then(works => {
     console.log('Projets récupérés avec succès :', works);
+    // Cacher le message d'erreur si les projets sont récupérés avec succès
+    if (works.length > 0) {
+      errorMessageElement.style.display = 'none';
+    }
   })
   .catch(error => {
     console.error('Erreur lors de la récupération des Projets :', error);
@@ -29,19 +39,25 @@ getWorks()
 
 
 //*** Récupération des Catégories de l'API ***// 
-async function getCategories() {                                             // Fonction unique pour les deux requêtes
-  try {                                                                      // Vérification des erreurs potentielles dans le bloc async
-    const response = await fetch(`${apiUrl}categories`);                     // Requête dans l'API
+async function getCategories() {
+  // Vérification des erreurs potentielles dans le bloc async
+  try {
+    // Requête dans l'API                                                                      
+    const response = await fetch(`${apiUrl}categories`);                     
 
     if (!response.ok) {
       throw new Error('Erreur lors de la récupération des catégories');
     }
 
-    const data = await response.json();                                      // Conversion des données au format json
+    // Conversion des données au format json
+    const data = await response.json();                                      
     return data;
-  } catch (error) {                                                          // Réception des erreurs potentielles du bloc async
-    console.log('Erreur lors de la récupération des catégories :', error);   // Visualisation des erreurs
-    return [];                                                               // Retourne des objets vides en cas d'erreur
+  // Réception des erreurs potentielles du bloc async
+  } catch (error) {
+    // Visualisation des erreurs                                                          
+    console.log('Erreur lors de la récupération des catégories :', error);
+    // Retourne des objets vides en cas d'erreur   
+    return [];                                                               
   }
 }
 
@@ -55,21 +71,27 @@ getCategories()
 
 //*** Affichage dynamique de la galerie ***//
 async function displayWorks(id) {
-  const gallery = document.querySelector('.gallery')                       // Récupération de l'élément HTML avec la classe .gallery du DOM et le stockage dans la constante gallery
-  gallery.innerHTML = "";                                                  // Efface le contenu existant dans l'élément avec la classe .gallery
+  // Récupération de l'élément HTML avec la classe .gallery du DOM et le stockage dans la constante gallery
+  const gallery = document.querySelector('.gallery')
+  // Efface le contenu existant dans l'élément avec la classe .gallery
+  gallery.innerHTML = "";                                                  
   //console.log(id)
 
-  const works = await getWorks();                                            // Récupération des données des Projets
+  // Récupération des données des Projets
+  const works = await getWorks();                                            
   //console.log(getWorks);
   if (id == 0) {
     filteredWorks = works.filter((work) => work.categoryId != id);
   } else {
-    filteredWorks = works.filter((work) => work.categoryId === id);  // Filtre les projets en fonction de la catégorie sélectionnée
+    // Filtre les projets en fonction de la catégorie sélectionnée
+    filteredWorks = works.filter((work) => work.categoryId === id);  
   }
 
-  filteredWorks.forEach(work => {                                                    // Boucle pour chaque Projet (forEach)
+  // Boucle pour chaque Projet (forEach)
+  filteredWorks.forEach(work => {                                            
 
-    const figure = document.createElement('figure');                         // Création des éléments HTML pour chaque Projet
+    // Création des éléments HTML pour chaque Projet
+    const figure = document.createElement('figure');                         
     const img = document.createElement('img');
     const figcaption = document.createElement('figcaption');
 
@@ -78,7 +100,8 @@ async function displayWorks(id) {
     figcaption.textContent = work.title;
     //console.log('Affichage des Projets :', work.title);
 
-    figure.appendChild(img);                                                 // Construction de la structure HTML
+    // Construction de la structure HTML
+    figure.appendChild(img);                                                 
     figure.appendChild(figcaption);
     gallery.appendChild(figure);
   });
@@ -87,23 +110,23 @@ async function displayWorks(id) {
 //*** Filtres ***//
 async function createFilterButtons() {
   const cats = await getCategories()
-  const categorySet = new Set();                                             // "Set" pour stocker les catégories uniques
-  cats.forEach(cat => {                                                  // Extraire les catégories uniques des projets
-    categorySet.add(cat);                                   // Ajoute la catégorie au Set
+  const categorySet = new Set();                                                 // "Set" pour stocker les catégories uniques
+  cats.forEach(cat => {                                                          // Extraire les catégories uniques des projets
+    categorySet.add(cat);                                                        // Ajoute la catégorie au Set
   });
   //console.log(categorySet)
-  const filterContainer = document.querySelector('.filter');                 // Sélectionne l'élément conteneur pour les filtres
+  const filterContainer = document.querySelector('.filter');                     // Sélectionne l'élément conteneur pour les filtres
 
   /* Création des boutons de filtre */
   // Ajout d'un bouton pour afficher tous les projets
   const allButton = document.createElement('button');
   allButton.textContent = 'Tous';
   allButton.classList.add('all', "active");
-  allButton.addEventListener('click', () => {
-    displayFilteredWorks(0);                                                    // Affiche tous les projets quand on appuie sur "Tous"
-    setActiveButton(allButton);                                                // Active le bouton "Tous"
+  allButton.addEventListener('click', () => {  
+    displayFilteredWorks(0);                                                      // Affiche tous les projets quand on appuie sur "Tous"
+    setActiveButton(allButton);                                                   // Active le bouton "Tous"
   });
-  filterContainer.appendChild(allButton);                                      // Ajoute le bouton "Tous"
+  filterContainer.appendChild(allButton);                                         // Ajoute le bouton "Tous"
 
   // Création des boutons pour chaque catégorie
   categorySet.forEach(category => {
@@ -113,17 +136,17 @@ async function createFilterButtons() {
     button.textContent = category.name;
     button.id = category.id
     button.addEventListener('click', () => {
-      displayFilteredWorks(category.id);                                        // Affiche les projets filtrés par catégorie
-      setActiveButton(button);                                                 // Active le bouton de la catégorie
+      displayFilteredWorks(category.id);                                           // Affiche les projets filtrés par catégorie
+      setActiveButton(button);                                                    // Active le bouton de la catégorie
     });
     filterContainer.appendChild(button);
   });
 }
 
 function setActiveButton(activeButton) {
-  const buttons = document.querySelectorAll('.filter button');                 // Sélectionne tous les boutons de filtre
-  buttons.forEach(button => button.classList.remove('active'));                // Retire la classe 'active' de tous les boutons
-  activeButton.classList.add('active');                                        // Ajoute la classe 'active' au bouton cliqué
+  const buttons = document.querySelectorAll('.filter button');                     // Sélectionne tous les boutons de filtre
+  buttons.forEach(button => button.classList.remove('active'));                    // Retire la classe 'active' de tous les boutons
+  activeButton.classList.add('active');                                            // Ajoute la classe 'active' au bouton cliqué
 }
 
 
@@ -131,9 +154,6 @@ async function init() {
   const token = localStorage.getItem("token");
   // L'utilisateur est connecté
   if (token) {
-    //Cacher le bouton de login
-    //Afficher le bouton de logout
-    //Cacher les filtres
 
     // Afficher les éléments avec la classe "admin"
     const adminElements = document.querySelectorAll(".admin");
@@ -175,7 +195,8 @@ function displayFilteredWorks(idCat) {
 /* ADMIN */
 // *** Gestion de la connexion/déconnexion *** //
 document.addEventListener('DOMContentLoaded', () => {
-  const logLink = document.getElementById('logLink'); // Lien login/logout
+  // Lien login/logout
+  const logLink = document.getElementById('logLink'); 
 
   // Vérifie et met à jour l'état de connexion au chargement et après chaque action
   updateLoginStatus();
@@ -186,7 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('token') && localStorage.getItem('userId')) {
       logout(); // Déconnexion si déjà connecté
     } else {
-      window.location.href = "login.html"; // Redirection vers la page de connexion si non connecté
+      // Redirection vers la page de connexion si non connecté
+      window.location.href = "login.html"; 
     }
   });
 });
@@ -194,10 +216,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Fonction pour mettre à jour l'affichage en fonction de l'état de connexion
 function updateLoginStatus() {
   const logLink = document.getElementById('logLink');
-  const isLoggedIn = localStorage.getItem('token') && localStorage.getItem('userId'); // Vérifie l'état à chaque appel
+  // Vérifie l'état à chaque appel
+  const isLoggedIn = localStorage.getItem('token') && localStorage.getItem('userId'); 
 
   if (isLoggedIn) {
-    logLink.textContent = 'logout'; // Changer le texte du lien en "Logout"
+    // Changer le texte du lien en "Logout"
+    logLink.textContent = 'logout'; 
   } else {
     logLink.textContent = 'login';
   }
@@ -207,35 +231,47 @@ function updateLoginStatus() {
 function logout() {
   localStorage.removeItem('userId');
   localStorage.removeItem('token');
-  updateLoginStatus(); // Mettre à jour l'état de connexion après déconnexion
+  // Mettre à jour l'état de connexion après déconnexion
+  updateLoginStatus(); 
   alert('Vous avez été déconnecté.');
-  window.location.href = "index.html"; // Redirection vers la page d'accueil après la déconnexion
+  // Redirection vers la page d'accueil après la déconnexion
+  window.location.href = "index.html"; 
 }
 
 /* Modale */
 // Fonction pour afficher les travaux dans la modal
 async function afficheWorksDansModal() {
   setupAddButton();
-  const worksFromApi = await getWorks(); // Récupération des projets depuis l'API
-  const galleryModal = document.querySelector(".gallery-modal"); // Sélection de la galerie dans la modal
-  galleryModal.innerHTML = ""; // Nettoyage de la galerie existante   
+  // Récupération des projets depuis l'API
+  const worksFromApi = await getWorks(); 
+  // Sélection de la galerie dans la modal
+  const galleryModal = document.querySelector(".gallery-modal"); 
+  // Nettoyage de la galerie existante 
+  galleryModal.innerHTML = "";   
 
-  document.addEventListener('keydown', disableRefresh); // on desactive reactive la touche F5
+  // on desactive reactive la touche F5
+  document.addEventListener('keydown', disableRefresh); 
   worksFromApi.forEach(work => {
-    const workCard = document.createElement("figure");  // Création de la carte projet
+    // Création de la carte projet
+    const workCard = document.createElement("figure");  
     workCard.dataset.id = `categorie${work.categoryId}`;
 
-    const workImgWrapper = document.createElement("div");  // Wrapper pour l'image et le logo
+    // Wrapper pour l'image et le logo
+    const workImgWrapper = document.createElement("div");  
     workImgWrapper.className = "image-wrapper";
 
-    const workImg = document.createElement("img");  // Image du projet
+    // Image du projet
+    const workImg = document.createElement("img");  
     workImg.src = work.imageUrl;
     workImg.alt = work.title;
     workImgWrapper.appendChild(workImg);
 
-    const trashIcon = document.createElement("i");  // Logo de la poubelle
-    trashIcon.className = "fas fa-trash-can trash-icon";  // Classe pour l'icône de la poubelle
-    trashIcon.dataset.workId = work.id; // Ajout de l'ID du projet 
+    // Logo de la poubelle
+    const trashIcon = document.createElement("i");  
+    // Classe pour l'icône de la poubelle
+    trashIcon.className = "fas fa-trash-can trash-icon";  
+    // Ajout de l'ID du projet
+    trashIcon.dataset.workId = work.id;  
     trashIcon.addEventListener('click', () => {
       deleteWork(work.id);
       reafiche();
@@ -243,8 +279,10 @@ async function afficheWorksDansModal() {
 
 
     workImgWrapper.appendChild(trashIcon);
-    workCard.appendChild(workImgWrapper);  // Ajout du wrapper à la carte projet
-    galleryModal.appendChild(workCard);  // Ajout de la carte à la galerie de la modal
+    // Ajout du wrapper à la carte projet
+    workCard.appendChild(workImgWrapper);  
+    // Ajout de la carte à la galerie de la modal
+    galleryModal.appendChild(workCard);  
   });
 }
 
@@ -258,39 +296,35 @@ const closeButton = document.querySelector(".close");
 
 
 btn_modif.addEventListener('click', async function () {
-  await afficheWorksDansModal(); // apelle fonction travaux
-  modal.style.display = 'block';  // afficher la modal
+  // apelle fonction travaux
+  await afficheWorksDansModal(); 
+  // afficher la modal
+  modal.style.display = 'block';  
 });
-
-// if (closeButton) {
-//   closeButton.addEventListener('click', () => {
-//     modal.style.display = 'none';  // Fermer la modal
-//     document.removeEventListener('keydown', disableRefresh); //on reactive la touche F5
-//     init(); //rafraichir les données une fois la modale quitté
-//     const backIcon = document.querySelector('.back-icon'); // Sélectionner l'icône de flèche gauche
-//     backIcon.style.display = 'none'; // Masquer l'icône de flèche gauche
-//   });
-// }
 
 if (closeButton) {
   closeButton.addEventListener('click', () => {
-    modal.style.display = 'none';  // Fermer la modal
-    document.removeEventListener('keydown', disableRefresh); //on reactive la touche F5
+    // Fermer la modal
+    modal.style.display = 'none';  
+    //on reactive la touche F5
+    document.removeEventListener('keydown', disableRefresh); 
     resetModal();
-    init(); //rafraichir les données une fois la modale quitté
+    //rafraichir les données une fois la modale quitté
+    init(); 
   });
 }
 
 // Fonction pour supprimer un projet
-async function deleteWork(workId) {     //  declarer la Fonction
-  const token = localStorage.getItem("token");  // on recupere le token
-  const response = await fetch(`${apiUrl}works/${workId}`, {  // 
+async function deleteWork(workId) {   
+  // on recupere le token
+  const token = localStorage.getItem("token");  
+  const response = await fetch(`${apiUrl}works/${workId}`, {  
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`
     }
   });
-  if (!response.ok) {  //  verfier la reponse
+  if (!response.ok) {
     throw new Error(`Erreur lors de la suppression du projet : ${response.status}`);
   }
   return response.status;
@@ -299,7 +333,6 @@ async function deleteWork(workId) {     //  declarer la Fonction
 function disableRefresh(event) {
   if ((event.key === 'F5') || (event.ctrlKey && event.key === 'r')) {
     event.preventDefault();
-    //        alert("Le rafraîchissement de la page est désactivé !");
   }
 }
 
@@ -326,7 +359,8 @@ function setupAddButton() {
   const modalTitle = document.getElementById('galleryTitle');
   const addPhotoTitle = document.getElementById('addPhotoTitle');
   const ajouterPhotoButton = document.getElementById('ajouterPhotoButton');
-  const backIcon = document.querySelector('.back-icon'); // Sélectionner l'icône de flèche gauche
+  // Sélectionner l'icône de flèche gauche
+  const backIcon = document.querySelector('.back-icon'); 
 
   if (addButton) {
     addButton.addEventListener('click', async () => {
@@ -336,7 +370,8 @@ function setupAddButton() {
       modalTitle.style.display = 'none';
       addPhotoTitle.style.display = 'block';
       ajouterPhotoButton.style.display = 'none';
-      backIcon.style.display = 'block'; // Afficher l'icône de flèche gauche
+      // Afficher l'icône de flèche gauche
+      backIcon.style.display = 'block'; 
     });
   }
 
@@ -364,9 +399,11 @@ function displayImagePreview(event) {
     reader.onload = function (e) {
       const img = document.createElement('img');
       img.src = e.target.result;
-      imagePreviewContainer.innerHTML = ''; // Effacer le contenu précédent
+      // Effacer le contenu précédent
+      imagePreviewContainer.innerHTML = ''; 
       imagePreviewContainer.appendChild(img);
-      uploadPhotoSection.classList.add('image-selected'); // Ajouter la classe pour masquer les éléments non nécessaires
+      // Ajouter la classe pour masquer les éléments non nécessaires
+      uploadPhotoSection.classList.add('image-selected'); 
     }
     reader.readAsDataURL(file);
   }
@@ -382,18 +419,7 @@ function addImageChangeListener() {
   }
 }
 
-addImageChangeListener(); // Ajouter l'écouteur d'événement pour l'image ici
-
-// function addModalClickListener() {
-//   window.addEventListener('click', (event) => {
-//     if (event.target == modal) {
-//       modal.style.display = 'none';
-//       document.removeEventListener('keydown', disableRefresh); // Réactiver la touche F5
-//       resetModal(); // Réinitialiser la modale à son état d'origine
-//       init();
-//     }
-//   });
-// }
+addImageChangeListener();
 
 
 // Fonction pour réinitialiser la modal
@@ -403,7 +429,8 @@ function resetModal() {
   const modalTitle = document.getElementById('galleryTitle');
   const addPhotoTitle = document.getElementById('addPhotoTitle');
   const ajouterPhotoButton = document.getElementById('ajouterPhotoButton');
-  const backIcon = document.querySelector('.back-icon'); // Sélectionner l'icône de flèche gauche
+  // Sélectionner l'icône de flèche gauche
+  const backIcon = document.querySelector('.back-icon'); 
 
   // Réinitialiser le formulaire
   const addWorkForm = document.getElementById('addWorkForm');
@@ -411,7 +438,8 @@ function resetModal() {
 
   // Réinitialiser l'aperçu de l'image
   const imagePreviewContainer = document.getElementById('imagePreview');
-  imagePreviewContainer.innerHTML = '<i class="fa-regular fa-image" id="imageIcon"></i>'; // Remettre l'icône d'image
+  // Remettre l'icône d'image
+  imagePreviewContainer.innerHTML = '<i class="fa-regular fa-image" id="imageIcon"></i>'; 
   const uploadPhotoSection = document.getElementById('uploadPhotoSection');
   uploadPhotoSection.classList.remove('image-selected');
 
